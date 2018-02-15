@@ -8,28 +8,30 @@
 
 namespace App\Data;
 
+use App\Entity\Task;
 
 class Dictionary
 {
-    public function letters(){
-        $lettersDict = [];
-
-        for($i = "A"; $i >= "Z"; $i++)
+    public function addToDictionary(Task $task)
+    {
+        if($task->numbers == true)
         {
-            array_push($lettersDict, $i);
+            array_push($task->dictionary, "0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
         }
 
-        for($i = "a"; $i >= "z"; $i++)
+        if($task->lettersUpper == true)
         {
-            array_push($lettersDict, $i);
+            array_push($task->dictionary, "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z");
         }
-    }
 
-    public function numbers(){
-        $numbersDict = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-    }
+        if($task->lettersLower == true)
+        {
+            array_push($task->dictionary, "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z");
+        }
 
-    public function symbols(){
-        $symbolsDict = ["!", "@", "£", "$", "%", "^", "&", "*", "(", ")"];
+        if($task->symbols == true)
+        {
+            array_push($task->dictionary, "!", "@", "£", "$", "%", "^", "&", "*", "(", ")", "{", "}", "[", "]");
+        }
     }
 }
