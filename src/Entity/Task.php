@@ -8,6 +8,8 @@
 
 namespace App\Entity;
 
+use App\Data\Dictionary;
+
 class Task
 {
     public $numbers;
@@ -17,10 +19,10 @@ class Task
     public $length;
     public $dictArrLen;
     public $password;
-    public $dictionary = array();
     public $passwordArray = array();
+    public $dictionary;
 
-    public function setSymbol($symbols)
+    public function setSymbols($symbols)
     {
         $this->symbols = $symbols;
     }
@@ -70,11 +72,6 @@ class Task
         return $this->length;
     }
 
-    public function getDictionary()
-    {
-        return $this->dictionary;
-    }
-
     public function setPasswordArray($password)
     {
         $this->passwordArray = $password;
@@ -103,5 +100,11 @@ class Task
     public function getPassword()
     {
         return $this->password;
+    }
+
+    public function createDictionary()
+    {
+        $this->dictionary = new Dictionary();
+        $this->dictionary->addToDictionary($this);
     }
 }
