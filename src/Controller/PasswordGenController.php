@@ -2,17 +2,27 @@
 
 namespace App\Controller;
 
+use App\Data\Dictionary;
+use App\Data\PasswordCreator;
 use App\Entity\Task;
+use App\Form\FormValidation;
+use App\Form\TaskType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 
 class PasswordGenController extends AbstractController
 {
+    public $PasswordCreator;
+    public $FormValidation;
+    public $Dictionary;
+
+    public function __construct(PasswordCreator $creator, FormValidation $validation)
+    {
+        $this->PasswordCreator = $creator;
+        $this->FormValidation = $validation;
+    }
+
     /**
      * @Route("/", name="passwordGen")
      */
@@ -20,47 +30,19 @@ class PasswordGenController extends AbstractController
     {
         $task = new Task();
 
-        $form = $this->createFormBuilder()
-            ->add("Symbols", CheckboxType::class, array('required' => false))
-            ->add("Letters", CheckboxType::class, array('required' => false))
-            ->add("Numbers", CheckboxType::class, array('required' => false))
-            ->add("Length", TextType::class, array("label" => "Length of Password:"))
-            ->add("Submit", SubmitType::class, array("label" => "Submit"))
-            ->getForm();
+        $form = $this->createForm(TaskType::class, $task);
 
         $form->handleRequest($request);
 
+        $this->FormValidation->Validation($form);
+
         if($form->isSubmitted() && $form->isValid())
         {
-            if($form->get("Symbols")->getData() == true)
-            {
-                $task->setSymbol(true);
-            }
-            else {
-                $task->setSymbol(false);
-            }
-
-            if($form->get("Letters")->getData() == true)
-            {
-                $task->setLetters(true);
-            }
-            else{
-                $task->setLetters(false);
-            }
-
-            if($form->get("Numbers")->getData() == true)
-            {
-                $task->setNumbers(true);
-            }
-            else {
-                $task->setNumbers(false);
-            }
+            $this->PasswordCreator->password($task);
         }
-
         return $this->render('form/passwordgen.html.twig', array(
             'password_form' => $form->createView(),
+            'final_password' => $task->getPassword(),
         ));
     }
-
-
 }

@@ -8,50 +8,18 @@
 
 namespace App\Data;
 
-use App\Data\Dictionary;
 use App\Entity\Task;
 
 class PasswordCreator
 {
-
-    public function getTrueParameters()
+    public function password(Task $task)
     {
-        $task = new Task();
+        $task->createDictionary();
 
-        $falseParams = [];
-        $trueParams = [];
-        $totalTrue = 0;
-
-        if($task->letters == true)
-        {
-            array_push($trueParams, "Letters");
-            $totalTrue += 1;
+        while(sizeof($task->passwordArray) < $task->length){
+            $randChar = mt_rand(0, sizeof($task->dictionary->dictionary)-1);
+            array_push($task->passwordArray, $task->dictionary->dictionary[$randChar]);
         }
-        else{
-            array_push($falseParams, "Letters");
-        }
-
-        if($task->numbers == true)
-        {
-            array_push($trueParams, "Numbers");
-            $totalTrue += 1;
-        }
-        else{
-            array_push($falseParams, "Numbers");
-        }
-
-        if($task->symbols == true)
-        {
-            array_push($trueParams, "symbols");
-            $totalTrue += 1;
-        }
-        else{
-            array_push($falseParams, "symbols");
-        }
-    }
-
-    public function writingPassword()
-    {
-
+        $task->setPassword(implode("", $task->passwordArray));
     }
 }
